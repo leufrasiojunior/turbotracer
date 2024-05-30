@@ -1,7 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
+
 *{
     box-sizing: border-box;
     border: none;
     outline: none;
     padding: 0;
     font-style: normal;
+}
+
+.inter-400 {
+    -webkit-font-smoothing: antialiased;
+    opacity: 1;
+    color:rgba(9,9,11);
+    font-family: "Inter", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "slnt" 0;
+    font-size: .875rem;
+  }
+
+.bg-light-custom{
+    background-color: #fafafa;
+}
+
+.custom-ring{
+    border-color: rgba(9, 9, 11)
+}
+
+.custom-bg-button{
+    background-color: #2F4858;
+    border-color: #2F4858;
+}
+
+.custom-bg-button:hover{
+    background-color: #007B85;
+    border-color: #007B85;
+
 }

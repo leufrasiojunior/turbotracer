@@ -1,32 +1,39 @@
-import { Button, Container, Form } from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 
 function App() {
   return (
     <Container
-      className="d-flex"
-      style={{
-        height: "100vh",
-      }}
+      fluid
+      className="d-flex vh-100 justify-content-center align-items-center bg-light-custom"
     >
-      <div className="col-lg-12 d-flex flex-column flex-wrap align-content-center justify-content-center align-items-center">
-        <div className="col-lg-6 d-flex flex-column flex-wrap align-content-center justify-content-center align-items-center gap-3 p-5 shadow h-75">
-          <Form className="d-flex flex-column gap-3 text-center w-100">
-            <h1>LOGIN</h1>
-            <div className="form-group">
-              <label>Your username </label>
-              <input type="text" id="username" className="form-control" />
-            </div>
-
-            <div className="form-group">
-              <label>Your password</label>
-              <input type="password" id="password" className="form-control" />
-            </div>
-            <div className="login-button d-flex flex-column flex-wrap align-content-center justify-content-center align-items-center">
-              <Button className="btn btn-default w-75">Login</Button>
-            </div>
-          </Form>
-        </div>
-      </div>
+      <Row className="w-100">
+        <Col xs={12} sm={8} md={6} lg={4} className="mx-auto">
+          <Container className="bg-white rounded-4 shadow-sm p-5 border custom-ring">
+            <h2 className="text-center">TurboTracker</h2>
+            <h5 className="text-center">Sign in</h5>
+            <Form className="d-flex flex-column gap-3">
+              <Form.Group controlId="formBasicEmail">
+                <Form.Label>
+                  Email address <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control type="email" placeholder="Enter email" />
+              </Form.Group>
+              <Form.Group controlId="formBasicPassword">
+                <Form.Label>
+                  Password <span className="text-danger">*</span>
+                </Form.Label>
+                <Form.Control type="password" placeholder="Password" />
+              </Form.Group>
+              <Form.Group controlId="formBasicCheckbox" className="text-start">
+                <Form.Check type="checkbox" label="Remember me" />
+              </Form.Group>
+              <Button type="submit" className="w-100 custom-bg-button">
+                Sign in
+              </Button>
+            </Form>
+          </Container>
+        </Col>
+      </Row>
     </Container>
   );
 }
