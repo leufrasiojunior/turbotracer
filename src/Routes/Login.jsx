@@ -1,8 +1,18 @@
+// src/Routes/Login.jsx
+
 import { useEffect, useState } from "react";
-import { Button, Col, Container, Form, Row, Alert } from "react-bootstrap";
-import api from "../ApiConnect/connect";
+import {
+  Button,
+  Col,
+  Container,
+  Form,
+  Row,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { isTokenExpired } from "../functions/isTokenExpired";
+import api from "../ApiConnect/connect";
 
 function LoginPage() {
   const payloadLogin = {
@@ -12,20 +22,19 @@ function LoginPage() {
 
   const [dataLogin, setDataLogin] = useState(payloadLogin);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       const isExpired = isTokenExpired(token);
-      if (isExpired) {
-        localStorage.removeItem("token");
-        navigate("/");
-      } else {
+      if (!isExpired) {
         navigate("/home");
       }
     }
   }, [navigate]);
+
   const handleSetDataLogin = (e) => {
     setDataLogin({
       ...dataLogin,
@@ -34,14 +43,25 @@ function LoginPage() {
     setError("");
   };
 
+  const validateForm = () => {
+    if (!dataLogin.email || !dataLogin.password) {
+      setError("Email and password are required.");
+      return false;
+    }
+    return true;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
+
+    setLoading(true);
     try {
       const response = await api.post("/login", dataLogin);
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
         setError("");
-        window.location.href = "/home";
+        navigate("/home");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -49,6 +69,8 @@ function LoginPage() {
       } else {
         setError("An unexpected error occurred. Please try again.");
       }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,8 +114,12 @@ function LoginPage() {
                   onChange={handleSetDataLogin}
                 />
               </Form.Group>
-              <Button type="submit" className="w-100 custom-bg-button mt-3">
-                Sign in
+              <Button
+                type="submit"
+                className="w-100 custom-bg-button mt-3"
+                disabled={loading}
+              >
+                {loading ? <Spinner animation="border" size="sm" /> : "Sign in"}
               </Button>
             </Form>
           </Container>

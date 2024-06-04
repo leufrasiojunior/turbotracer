@@ -46,3 +46,16 @@
     background-color: #007B85;
     border-color: #007B85;
 }
+
+.nav-link{
+    opacity: 0.7;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    color: black
+}
+
+.nav-link:hover{
+    opacity: 1;
+    border-radius: 20px;
+    border: rgba(0, 0, 0, 0.175) solid 1px;
+}
