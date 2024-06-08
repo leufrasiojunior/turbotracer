@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import api from "../ApiConnect/connect";
 import moment from "moment-timezone";
 import TimezoneSelect from "../Components/TimezoneSelect";
-import { Button, Card, Container } from "react-bootstrap";
+import { Button, Card, Container, Spinner } from "react-bootstrap";
 import ToastNotification from "../Components/ToastNotification";
 import { Form, Row, Col, InputGroup, FormControl } from "react-bootstrap";
 
@@ -18,6 +18,7 @@ function Settings() {
   const [errorMessage, setErrorMessage] = useState("");
   const [pruneData, setPruneData] = useState("");
   const [scheduleTest, setScheduleTest] = useState("");
+  const [isLoading, setIsLoading] = useState();
 
   const handleTimezoneChange = (selectedOption) => {
     setFusoHorario(selectedOption.value);
@@ -32,7 +33,9 @@ function Settings() {
     }
   };
 
-  const saveConfigs = () => {
+  const saveConfigs = (event) => {
+    event.preventDefault();
+    setIsLoading(true);
     const payloadSettings = {
       timezone: fusoHorario,
       pruneData: pruneData,
@@ -44,15 +47,21 @@ function Settings() {
     if (scheduleTest) {
       payloadSettings.scheduleTest = scheduleTest;
     }
+    console.log("Payload:", payloadSettings);
     api
       .post("/settings", payloadSettings)
       .then((response) => {
         if (response.status === 200 || response.status === 201) {
           setShowSuccessToast(true);
         }
+        setIsLoading(false);
       })
       .catch((error) => {
-        setErrorMessage(error.message || "Something went wrong");
+        if (error.response && error.response.status === 400) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage(error.message || "Something went wrong");
+        }
         setShowErrorToast(true);
       });
   };
@@ -62,6 +71,7 @@ function Settings() {
       .get("/settings")
       .then((response) => {
         if (response.status === 200 || response.status === 201) {
+          setScheduleTest(response.data.scheduleTest.payload);
           setFusoHorario(response.data.timezone.payload);
         }
       })
@@ -91,13 +101,14 @@ function Settings() {
                       className="shadow-sm"
                       onChange={handleOtherSettings}
                       name="schedule"
+                      value={scheduleTest}
                     />
                     <InputGroup.Text
                       style={{ backgroundColor: "#FFF" }}
                       className="shadow-sm"
                     >
                       <a
-                        href="https://crontab.guru/"
+                        href="https://crontab.cronhub.io/"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -146,7 +157,13 @@ function Settings() {
                 </Form.Group>
               </Row>
               <Container className="d-flex justify-content-center align-items-center">
-                <Button onClick={saveConfigs}>Save</Button>
+                <Button onClick={saveConfigs} disabled={isLoading}>
+                  {isLoading ? (
+                    <Spinner animation="border" size="sm" />
+                  ) : (
+                    "Save"
+                  )}
+                </Button>
               </Container>
             </Form>
           </Card.Body>
@@ -160,7 +177,7 @@ function Settings() {
         <ToastNotification
           show={showErrorToast}
           onClose={() => setShowErrorToast(false)}
-          message={errorMessage}
+          message={errorMessage || "Error message"}
           variant="error"
         />
       </Container>

@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-// src/Components/SidebarMenu.js
 import { Link } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import {
@@ -9,6 +8,7 @@ import {
   FaGear,
   FaBookOpen,
   FaGithub,
+  FaChartSimple,
 } from "react-icons/fa6";
 
 const SidebarMenu = ({ isOpen, onClose }) => {
@@ -20,12 +20,18 @@ const SidebarMenu = ({ isOpen, onClose }) => {
       style={{ width: "250px" }}
     >
       <div className="mb-4">
-        <h2>TurboTracer</h2>
+        <h2>TurboTracker</h2>
       </div>
       <Nav className="flex-column d-flex gap-3">
         <Nav.Item>
           <Nav.Link as={Link} to="/dashboard" onClick={onClose}>
             <FaHouse className="mx-2" />
+            Home
+          </Nav.Link>
+        </Nav.Item>
+        <Nav.Item>
+          <Nav.Link as={Link} to="/dashboard" onClick={onClose}>
+            <FaChartSimple className="mx-2" />
             Dashboard
           </Nav.Link>
         </Nav.Item>

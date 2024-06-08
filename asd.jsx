@@ -1,4 +1,4 @@
-import { Button, Col, Container, Form } from "react-bootstrap";
+import { Button, Container, Form } from "react-bootstrap";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       className="d-flex vh-100 justify-content-center align-items-center"
     >
       <Container className="text-center">
-        <h1>TurboTracer</h1>
+        <h1>TurboTracker</h1>
         <h5>Sign in</h5>
         <Form>
           <Form.Group>

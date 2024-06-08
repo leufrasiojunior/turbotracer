@@ -1,8 +1,8 @@
-// src/Components/Layout.js
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import SidebarMenu from "./SidebarMenu";
 import { Button, Offcanvas } from "react-bootstrap";
+import { FaBarsStaggered } from "react-icons/fa6";
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -14,7 +14,7 @@ const Layout = () => {
   return (
     <div className="d-flex">
       <Button className="d-lg-none" onClick={toggleSidebar}>
-        ☰
+        <FaBarsStaggered />
       </Button>
       <div className="d-none d-lg-block">
         <SidebarMenu />
