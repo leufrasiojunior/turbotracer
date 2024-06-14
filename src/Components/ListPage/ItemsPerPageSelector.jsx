@@ -1,5 +1,4 @@
-import React from "react";
-
+/* eslint-disable react/prop-types */
 const ItemsPerPageSelector = ({ take, handleItemsPerPageChange }) => {
   return (
     <label htmlFor="itemsPerPage" className="d-flex align-items-center">
