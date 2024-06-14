@@ -16,10 +16,10 @@ const Layout = () => {
       <Button className="d-lg-none" onClick={toggleSidebar}>
         <FaBarsStaggered />
       </Button>
-      <div className="d-none d-lg-block">
+      <div className="d-none d-lg-block position-fixed">
         <SidebarMenu />
       </div>
-      <div className="flex-grow-1">
+      <div className="flex-grow-1 d-flex flex-column justify-content-start align-content-center flex-wrap">
         <Outlet />
       </div>
       <Offcanvas

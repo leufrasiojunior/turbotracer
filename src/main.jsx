@@ -10,6 +10,7 @@ import Home from "./Routes/Home.jsx";
 import Layout from "./Components/Layout.jsx";
 import ProtectedRoute from "./middlewares/ProtectedRoute.jsx";
 import Settings from "./Routes/Settings.jsx";
+import "./assets/Styles/Custom.css";
 
 const router = createBrowserRouter([
   {

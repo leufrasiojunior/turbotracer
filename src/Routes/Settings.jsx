@@ -82,106 +82,99 @@ function Settings() {
   }, []);
 
   return (
-    <div className="bg-light-custom">
-      <Container
-        fluid
-        className="d-flex flex column vh-100 justify-content-center align-items-center "
-        style={{ width: "70vw" }}
-      >
-        <Card style={{ width: "80rem" }} className="">
-          <Card.Header>General Settings</Card.Header>
-          <Card.Body>
-            <Form className="p-4 rounded-5">
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formSpeedtestSchedule">
-                  <Form.Label>Speedtest schedule</Form.Label>
-                  <InputGroup>
-                    <FormControl
-                      type="text"
-                      className="shadow-sm"
-                      onChange={handleOtherSettings}
-                      name="schedule"
-                      value={scheduleTest}
-                    />
-                    <InputGroup.Text
-                      style={{ backgroundColor: "#FFF" }}
-                      className="shadow-sm"
-                    >
-                      <a
-                        href="https://crontab.cronhub.io/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Cron Generator
-                      </a>
-                    </InputGroup.Text>
-                  </InputGroup>
-                  <Form.Text className="text-muted">
-                    Leave empty to disable scheduled tests.
-                  </Form.Text>
-                </Form.Group>
-
-                <Form.Group as={Col} controlId="formPruneResults">
-                  <Form.Label>Prune results older than</Form.Label>
-                  <InputGroup>
-                    <FormControl
-                      type="number"
-                      placeholder="0"
-                      className="shadow-sm"
-                      onChange={handleOtherSettings}
-                      name="prune"
-                    />
-                    <InputGroup.Text
-                      className="shadow-sm"
-                      style={{ backgroundColor: "#FFF" }}
-                    >
-                      days
-                    </InputGroup.Text>
-                  </InputGroup>
-                  <Form.Text className="text-muted">
-                    Set to zero to disable pruning.
-                  </Form.Text>
-                </Form.Group>
-              </Row>
-
-              <Row className="mb-3">
-                <Form.Group as={Col} controlId="formSpeedtestServers">
-                  <Form.Label>Timezone Select</Form.Label>
-                  <TimezoneSelect
-                    options={opcoesFusoHorario}
-                    onChange={handleTimezoneChange}
+    <Container
+      fluid
+      className="d-flex flex column vh-100 justify-content-center align-items-center "
+    >
+      <Card style={{ width: "80rem" }} className="">
+        <Card.Header>General Settings</Card.Header>
+        <Card.Body>
+          <Form className="p-4 rounded-5">
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formSpeedtestSchedule">
+                <Form.Label>Speedtest schedule</Form.Label>
+                <InputGroup>
+                  <FormControl
+                    type="text"
                     className="shadow-sm"
-                    enableShadow={true}
-                    defaultValue={{ value: fusoHorario, label: fusoHorario }}
+                    onChange={handleOtherSettings}
+                    name="schedule"
+                    value={scheduleTest}
                   />
-                </Form.Group>
-              </Row>
-              <Container className="d-flex justify-content-center align-items-center">
-                <Button onClick={saveConfigs} disabled={isLoading}>
-                  {isLoading ? (
-                    <Spinner animation="border" size="sm" />
-                  ) : (
-                    "Save"
-                  )}
-                </Button>
-              </Container>
-            </Form>
-          </Card.Body>
-        </Card>
-        <ToastNotification
-          show={showSuccessToast}
-          onClose={() => setShowSuccessToast(false)}
-          message="Settings saved successfully!"
-          variant="success"
-        />
-        <ToastNotification
-          show={showErrorToast}
-          onClose={() => setShowErrorToast(false)}
-          message={errorMessage || "Error message"}
-          variant="error"
-        />
-      </Container>
-    </div>
+                  <InputGroup.Text
+                    style={{ backgroundColor: "#FFF" }}
+                    className="shadow-sm"
+                  >
+                    <a
+                      href="https://crontab.cronhub.io/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Cron Generator
+                    </a>
+                  </InputGroup.Text>
+                </InputGroup>
+                <Form.Text className="text-muted">
+                  Leave empty to disable scheduled tests.
+                </Form.Text>
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="formPruneResults">
+                <Form.Label>Prune results older than</Form.Label>
+                <InputGroup>
+                  <FormControl
+                    type="number"
+                    placeholder="0"
+                    className="shadow-sm"
+                    onChange={handleOtherSettings}
+                    name="prune"
+                  />
+                  <InputGroup.Text
+                    className="shadow-sm"
+                    style={{ backgroundColor: "#FFF" }}
+                  >
+                    days
+                  </InputGroup.Text>
+                </InputGroup>
+                <Form.Text className="text-muted">
+                  Set to zero to disable pruning.
+                </Form.Text>
+              </Form.Group>
+            </Row>
+
+            <Row className="mb-3">
+              <Form.Group as={Col} controlId="formSpeedtestServers">
+                <Form.Label>Timezone Select</Form.Label>
+                <TimezoneSelect
+                  options={opcoesFusoHorario}
+                  onChange={handleTimezoneChange}
+                  className="shadow-sm"
+                  enableShadow={true}
+                  defaultValue={{ value: fusoHorario, label: fusoHorario }}
+                />
+              </Form.Group>
+            </Row>
+            <Container className="d-flex justify-content-center align-items-center">
+              <Button onClick={saveConfigs} disabled={isLoading}>
+                {isLoading ? <Spinner animation="border" size="sm" /> : "Save"}
+              </Button>
+            </Container>
+          </Form>
+        </Card.Body>
+      </Card>
+      <ToastNotification
+        show={showSuccessToast}
+        onClose={() => setShowSuccessToast(false)}
+        message="Settings saved successfully!"
+        variant="success"
+      />
+      <ToastNotification
+        show={showErrorToast}
+        onClose={() => setShowErrorToast(false)}
+        message={errorMessage || "Error message"}
+        variant="error"
+      />
+    </Container>
   );
 }
 
