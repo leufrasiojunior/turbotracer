@@ -90,7 +90,7 @@ const List = () => {
   useEffect(() => {
     fetchResults();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [take]);
 
   const exportToCsv = async () => {
     try {
@@ -163,8 +163,8 @@ const List = () => {
     setModalShow(true);
     setId(id);
     try {
-      const response = await api.get(`/specified/${id}`);
-      setSelectedRecord(response.data);
+      const response = await api.get(`/list-results/${id}`);
+      setSelectedRecord(JSON.parse(response.data.data));
     } catch (error) {
       console.error("Error fetching record details:", error);
     }
