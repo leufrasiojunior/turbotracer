@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import api from "../ApiConnect/connect";
 import { Container, Row } from "react-bootstrap";
-import { saveAs } from "file-saver";
-import { BsFiletypeCsv } from "react-icons/bs";
-import { bpsToMbps } from "../functions/bpsToMbps";
 import Loader from "../Components/Spinner";
+import { saveAs } from "file-saver";
+import ItemsPerPageSelector from "../Components/ListPage/ItemsPerPageSelector";
+import ExportButton from "../Components/ListPage/ExportButton";
+import TableData from "../Components/ListPage/TableData";
+import Pagination from "../Components/ListPage/Pagination";
 import ModalCustom from "../Components/Modal";
 
 const List = () => {
@@ -64,11 +66,6 @@ const List = () => {
     setCurrentPage(1);
   };
 
-  const currentData = results.slice(
-    (currentPage - 1) * take,
-    currentPage * take + take
-  );
-
   const handleCheckboxChange = (id, event) => {
     if (id === "selectAll") {
       if (event.target.checked) {
@@ -104,6 +101,7 @@ const List = () => {
         const response = await api.get(`/allresults`);
         exportData = response.data.results;
       }
+      console.log(exportData);
       let csvContent = "";
 
       const headerRow = Object.keys(exportData[0]).join(";");
@@ -151,44 +149,12 @@ const List = () => {
     }
     setCurrentPage(page);
   };
+
   const handleFetchError = (error) => {
     alert("An error occurred while fetching results. Please try again.", error);
   };
 
   const totalPages = Math.ceil(totalRecords / take);
-
-  const renderPagination = () => {
-    const pages = [];
-
-    for (let i = 1; i <= Math.min(3, totalPages); i++) {
-      pages.push(
-        <button
-          className="btn btn-primary marginRight"
-          key={i}
-          onClick={() => handlePageChange(i)}
-          disabled={i === currentPage}
-        >
-          {i}
-        </button>
-      );
-    }
-
-    const currentPageIndex = Math.min(Math.max(currentPage - 2, 4), totalPages);
-    const lastPageIndex = Math.min(currentPageIndex + 2, totalPages);
-    for (let i = currentPageIndex; i <= lastPageIndex; i++) {
-      pages.push(
-        <button
-          className="btn btn-primary marginRight"
-          key={i}
-          onClick={() => handlePageChange(i)}
-          disabled={i === currentPage}
-        >
-          {i}
-        </button>
-      );
-    }
-    return pages;
-  };
 
   const handleRowClick = async (id, event) => {
     if (event.target.type === "checkbox" || event.target.id === "box") {
@@ -205,9 +171,9 @@ const List = () => {
   };
 
   useEffect(() => {
-    const visibleIds = currentData.map((item) => item.id);
+    const visibleIds = results.map((item) => item.id);
     setSelectAll(visibleIds.every((id) => selectedItems.includes(id)));
-  }, [currentData, selectedItems]);
+  }, [selectedItems]);
 
   const startIndex = (currentPage - 1) * take + 1;
   const endIndex = Math.min(currentPage * take, totalPages);
@@ -227,218 +193,41 @@ const List = () => {
                     alignContent: "space-between",
                   }}
                 >
-                  <label
-                    htmlFor="itemsPerPage"
-                    className="d-flex align-items-center"
-                  >
-                    Show
-                    <select
-                      className="custom-select custom-select-sm form-control form-control-sm"
-                      id="itemsPerPage"
-                      value={take}
-                      onChange={handleItemsPerPageChange}
-                      style={{
-                        display: "flex",
-                        marginLeft: "7px",
-                        marginRight: "7px",
-                        paddingLeft: "8px",
-                        paddingRight: "24px",
-                        width: "49px !important",
-                      }}
-                    >
-                      <option value={5}>5</option>
-                      <option value={15}>15</option>
-                      <option value={25}>25</option>
-                      <option value={50}>50</option>
-                      <option value={100}>100</option>
-                    </select>
-                    Entries
-                  </label>
+                  <ItemsPerPageSelector
+                    take={take}
+                    handleItemsPerPageChange={handleItemsPerPageChange}
+                  />
                 </div>
               </div>
               <div className="col-sm-12 col-md-6 d-flex justify-content-end">
-                <button
-                  className="btn btn-secondary buttons-copy buttons-html5"
-                  onClick={exportToCsv}
-                >
-                  <BsFiletypeCsv style={{ marginRight: "5px" }} />
-                  Export as CSV
-                </button>
+                <ExportButton exportToCsv={exportToCsv} />
               </div>
             </Row>
             {!loading ? (
               <>
                 <Row className="col-sm-12">
-                  <table
-                    className="table dataTable no-footer table-hover text-center"
-                    style={{ width: "100%" }}
-                  >
-                    <thead className="thead-light table-bordered">
-                      <tr role="row">
-                        <th
-                          style={{ cursor: "pointer" }}
-                          onClick={() =>
-                            handleCheckboxChange("selectAll", {
-                              target: { checked: !selectAll },
-                            })
-                          }
-                        >
-                          <input
-                            type="checkbox"
-                            checked={selectAll}
-                            onChange={(event) =>
-                              handleCheckboxChange("selectAll", event)
-                            }
-                          />
-                        </th>
-                        <th>ID</th>
-                        <th>Download</th>
-                        <th>Upload</th>
-                        <th>Ping</th>
-                        <th>Status</th>
-                        <th>Timestamp</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {results &&
-                        results.map((item) => (
-                          <tr
-                            key={item.id}
-                            onClick={(event) =>
-                              item.status == "failed"
-                                ? null
-                                : item.status == "started"
-                                ? null
-                                : handleRowClick(item.id, event)
-                            }
-                            style={{ cursor: "pointer" }}
-                          >
-                            <td
-                              id="box"
-                              onClick={(event) =>
-                                handleCheckboxChange(item.id, event)
-                              }
-                            >
-                              <input
-                                type="checkbox"
-                                checked={selectedItems.includes(item.id)}
-                                onChange={(event) =>
-                                  handleCheckboxChange(item.id, event)
-                                }
-                              />
-                            </td>
-                            <td>
-                              {item.id !== null && item.id !== undefined
-                                ? item.id
-                                : ""}
-                            </td>
-                            <td>
-                              {item.download !== null &&
-                              item.download !== undefined
-                                ? bpsToMbps(item.download * 8).toFixed(2)
-                                : ""}
-                            </td>
-                            <td>
-                              {item.upload !== null && item.upload !== undefined
-                                ? bpsToMbps(item.upload * 8).toFixed(2)
-                                : ""}
-                            </td>
-                            <td>
-                              {item.ping !== null && item.ping !== undefined
-                                ? item.ping.toFixed(2)
-                                : ""}
-                            </td>
-                            <td>
-                              <div className="w-auto">
-                                <div className="d-flex justify-content-center">
-                                  <span
-                                    className={
-                                      item.status === "completed"
-                                        ? "ring-inset CustomFontSize ring-1 ring-custom-600/10 custom-success-text custom-success-bg pb-1 pt-1 px-2"
-                                        : item.status === "failed"
-                                        ? "text-custom-600 ring-inset ring-1 bg-custom-50 ring-custom-600/10 CustomFontSize pb-1 pt-1 px-2"
-                                        : item.status === "started"
-                                        ? "text-custom-600 ring-inset CustomFontSize ring-1 ring-custom-600/10 custom-success-text custom-success-bg pb-1 pt-1 px-2"
-                                        : "text-custom-600"
-                                    }
-                                    style={{
-                                      borderRadius: ".375rem",
-                                      "--c-50":
-                                        item.status === "completed"
-                                          ? "var(--success-50)"
-                                          : item.status === "failed"
-                                          ? "var(--danger-50)"
-                                          : item.status === "started"
-                                          ? "var(--warning-50)"
-                                          : "",
-                                      "--c-400":
-                                        item.status === "completed"
-                                          ? "var(--success-400)"
-                                          : item.status === "failed"
-                                          ? "var(--danger-400)"
-                                          : item.status === "started"
-                                          ? "var(--warning-400)"
-                                          : "",
-                                      "--c-600":
-                                        item.status === "completed"
-                                          ? "var(--success-600)"
-                                          : item.status === "failed"
-                                          ? "var(--danger-600)"
-                                          : item.status === "started"
-                                          ? "var(--warning-600)"
-                                          : "",
-                                    }}
-                                  >
-                                    {item.status !== null &&
-                                    item.status !== undefined
-                                      ? item.status
-                                      : ""}
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
-                            <td>
-                              {item.created_at !== null &&
-                              item.created_at !== undefined
-                                ? new Date(item.created_at).toLocaleString()
-                                : "N/A"}
-                            </td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
+                  <TableData
+                    results={results}
+                    handleCheckboxChange={handleCheckboxChange}
+                    selectedItems={selectedItems}
+                    handleRowClick={handleRowClick}
+                    selectAll={selectAll}
+                    setSelectAll={setSelectAll}
+                  />
                 </Row>
                 <Row className="align-items-center">
                   <div className="col-sm-12 col-md-5">
                     <div className="dataTables_info col">
-                      Showing {startIndex} to {endIndex} of {results.length}{" "}
+                      Showing {startIndex} to {endIndex} of {totalRecords}{" "}
                       results
                     </div>
                   </div>
-                  <div className="col-sm-12 col-md-7 dataTables_paginate ">
-                    <div className="d-flex justify-content-end">
-                      <button
-                        onClick={() =>
-                          handlePageChange(Math.max(currentPage - 1, 1))
-                        }
-                        disabled={currentPage === 1}
-                        className="btn btn-primary active marginRight"
-                      >
-                        Anterior
-                      </button>
-                      <span>{renderPagination()}</span>
-                      <button
-                        onClick={() =>
-                          handlePageChange(
-                            Math.min(currentPage + 1, totalPages)
-                          )
-                        }
-                        disabled={currentPage === totalPages}
-                        className="btn btn-primary active"
-                      >
-                        Próxima
-                      </button>
-                    </div>
+                  <div className="col-sm-12 col-md-7 dataTables_paginate">
+                    <Pagination
+                      totalPages={totalPages}
+                      currentPage={currentPage}
+                      handlePageChange={handlePageChange}
+                    />
                   </div>
                 </Row>
               </>
