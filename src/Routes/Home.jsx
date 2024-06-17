@@ -1,21 +1,16 @@
-import { useLocation } from "react-router-dom";
+import { Container } from "react-bootstrap";
+import Avarages from "../Components/Avarages";
+import DownloadChats from "../Components/DownloadChats";
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
+function Home() {
+  return (
+    <>
+      <Container className="bg-light">
+        <Avarages />
+        <DownloadChats />
+      </Container>
+    </>
+  );
 }
 
-const QueryParamExample = () => {
-  const query = useQuery();
-  const param1 = query.get("param1");
-  const param2 = query.get("param2");
-
-  return (
-    <div>
-      <h1>Query Parameters Example</h1>
-      <p>Param1: {param1}</p>
-      <p>Param2: {param2}</p>
-    </div>
-  );
-};
-
-export default QueryParamExample;
+export default Home;

@@ -24,7 +24,7 @@ const SidebarMenu = ({ isOpen, onClose }) => {
       </div>
       <Nav className="flex-column d-flex gap-3">
         <Nav.Item>
-          <Nav.Link as={Link} to="/dashboard" onClick={onClose}>
+          <Nav.Link as={Link} to="/home" onClick={onClose}>
             <FaHouse className="mx-2" />
             Home
           </Nav.Link>
