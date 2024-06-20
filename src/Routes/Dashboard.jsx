@@ -1,8 +1,11 @@
+import { Container } from "react-bootstrap";
+import ListServers from "../Components/DashboardComponents/ListServers";
+
 function Dashboard() {
   return (
-    <div>
-      <div>teste</div>
-    </div>
+    <Container className="d-flex vh-100">
+      <ListServers />
+    </Container>
   );
 }
 
