@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Col, Container, Row, Button, Modal, Card } from "react-bootstrap";
-import { bpsToMbps } from "../functions/bpsToMbps";
+import { bpsToMbps } from "../../functions/bpsToMbps";
 
 function ModalCustom({ show, onHide, data, id }) {
   if (data) {

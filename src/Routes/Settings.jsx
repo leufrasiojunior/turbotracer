@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../ApiConnect/connect";
 import moment from "moment-timezone";
-import TimezoneSelect from "../Components/TimezoneSelect";
+import TimezoneSelect from "../Components/Settings/TimezoneSelect";
 import { Button, Card, Container, Spinner } from "react-bootstrap";
-import ToastNotification from "../Components/ToastNotification";
+import ToastNotification from "../Components/Settings/ToastNotification";
 import { Form, Row, Col, InputGroup, FormControl } from "react-bootstrap";
 
 function Settings() {
@@ -11,7 +11,6 @@ function Settings() {
     () => moment.tz.names().map((tz) => ({ value: tz, label: tz })),
     []
   );
-
   const [fusoHorario, setFusoHorario] = useState("UTC");
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [showErrorToast, setShowErrorToast] = useState(false);
@@ -19,9 +18,17 @@ function Settings() {
   const [pruneData, setPruneData] = useState("");
   const [scheduleTest, setScheduleTest] = useState("");
   const [isLoading, setIsLoading] = useState();
+  const [hosts, setHosts] = useState([]);
+  const [selectedHost, setSelectedHost] = useState("");
 
   const handleTimezoneChange = (selectedOption) => {
     setFusoHorario(selectedOption.value);
+  };
+
+  const selectHoutes = () => {
+    api.get("/gethosts").then((hosts) => {
+      setHosts(hosts.data);
+    });
   };
 
   const handleOtherSettings = (e) => {
@@ -40,14 +47,19 @@ function Settings() {
       timezone: fusoHorario,
       pruneData: pruneData,
       scheduleTest: scheduleTest,
+      host: selectedHost,
     };
+
     if (pruneData) {
       payloadSettings.pruneData = pruneData;
     }
     if (scheduleTest) {
       payloadSettings.scheduleTest = scheduleTest;
     }
-    console.log("Payload:", payloadSettings);
+    if (selectedHost) {
+      payloadSettings.host = selectedHost;
+    }
+
     api
       .post("/settings", payloadSettings)
       .then((response) => {
@@ -67,6 +79,7 @@ function Settings() {
   };
 
   useEffect(() => {
+    selectHoutes();
     api
       .get("/settings")
       .then((response) => {
@@ -80,6 +93,10 @@ function Settings() {
         setShowErrorToast(true);
       });
   }, []);
+
+  const handleHostChange = (event) => {
+    setSelectedHost(event.target.value);
+  };
 
   return (
     <Container
@@ -143,6 +160,21 @@ function Settings() {
             </Row>
 
             <Row className="mb-3">
+              <Form.Group as={Col} controlId="formPruneResults">
+                <Form.Label>Server Host Select</Form.Label>
+                <Form.Select
+                  className="form-control"
+                  value={selectedHost}
+                  onChange={handleHostChange}
+                >
+                  <option value="">Random Server</option>
+                  {hosts.map((host) => (
+                    <option key={host.id} value={host.id}>
+                      {host.sponsor} | Distance: {host.distance}
+                    </option>
+                  ))}
+                </Form.Select>
+              </Form.Group>
               <Form.Group as={Col} controlId="formSpeedtestServers">
                 <Form.Label>Timezone Select</Form.Label>
                 <TimezoneSelect

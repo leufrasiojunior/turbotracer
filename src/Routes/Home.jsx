@@ -1,6 +1,6 @@
 import { Container, Row, Col } from "react-bootstrap";
-import Avarages from "../Components/Avarages";
-import DownloadChats from "../Components/DownloadChats";
+import Avarages from "../Components/Home/Avarages";
+import DownloadChats from "../Components/Home/DownloadChats";
 
 function Home() {
   return (

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import api from "../ApiConnect/connect";
+import api from "../../ApiConnect/connect";
 import { Card, Col, Container, Row } from "react-bootstrap";
 import { BsClock, BsDownload, BsUpload } from "react-icons/bs";
-import Loader from "../Components/Spinner";
+import Loader from "../Spinner";
 
 function bpsToMbps(bps) {
   return bps / 1000000;

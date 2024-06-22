@@ -7,7 +7,7 @@ import ItemsPerPageSelector from "../Components/ListPage/ItemsPerPageSelector";
 import ExportButton from "../Components/ListPage/ExportButton";
 import TableData from "../Components/ListPage/TableData";
 import Pagination from "../Components/ListPage/Pagination";
-import ModalCustom from "../Components/Modal";
+import ModalCustom from "../Components/ListPage/Modal";
 
 const List = () => {
   const [results, setResults] = useState([]);

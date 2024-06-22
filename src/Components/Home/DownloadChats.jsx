@@ -1,13 +1,12 @@
 import moment from "moment";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import api from "../ApiConnect/connect";
+import { useCallback, useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import { BsCalendar } from "react-icons/bs";
-import Loader from "./Spinner";
-import DatePickers from "./ChartsHome/DatePickers";
-import TimezoneSelect from "./ChartsHome/TimezoneSelect";
-import { LoadMoreButton, ResetButton } from "./ChartsHome/TopButtons";
-import ChartComponent from "./ChartsHome/ChartComponent";
+import api from "../../ApiConnect/connect";
+import Loader from "../Spinner";
+import DatePickers from "../ChartsHome/DatePickers";
+import { LoadMoreButton, ResetButton } from "../ChartsHome/TopButtons";
+import ChartComponent from "../ChartsHome/ChartComponent";
 
 const DownloadChats = () => {
   const [dados, setDados] = useState([]);

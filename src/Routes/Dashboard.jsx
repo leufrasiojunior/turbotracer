@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import ListServers from "../Components/DashboardComponents/ListServers";
+import ListServers from "../Components/Dashboard/ListServers";
 
 function Dashboard() {
   return (
