@@ -17,15 +17,17 @@ function Settings() {
   const [errorMessage, setErrorMessage] = useState("");
   const [pruneData, setPruneData] = useState("");
   const [scheduleTest, setScheduleTest] = useState("");
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const [hosts, setHosts] = useState([]);
   const [selectedHost, setSelectedHost] = useState("");
+  const [newHostId, setNewHostId] = useState("");
+  const [isAddingNewHost, setIsAddingNewHost] = useState(false);
 
   const handleTimezoneChange = (selectedOption) => {
     setFusoHorario(selectedOption.value);
   };
 
-  const selectHoutes = () => {
+  const selectHosts = () => {
     api.get("/gethosts").then((hosts) => {
       setHosts(hosts.data);
     });
@@ -50,16 +52,6 @@ function Settings() {
       host: selectedHost,
     };
 
-    if (pruneData) {
-      payloadSettings.pruneData = pruneData;
-    }
-    if (scheduleTest) {
-      payloadSettings.scheduleTest = scheduleTest;
-    }
-    if (selectedHost) {
-      payloadSettings.host = selectedHost;
-    }
-
     api
       .post("/settings", payloadSettings)
       .then((response) => {
@@ -79,7 +71,7 @@ function Settings() {
   };
 
   useEffect(() => {
-    selectHoutes();
+    selectHosts();
     api
       .get("/settings")
       .then((response) => {
@@ -95,13 +87,34 @@ function Settings() {
   }, []);
 
   const handleHostChange = (event) => {
-    setSelectedHost(event.target.value);
+    if (event.target.value === "add-new") {
+      setIsAddingNewHost(true);
+    } else {
+      setSelectedHost(event.target.value);
+      setIsAddingNewHost(false);
+    }
+  };
+
+  const handleNewHostIdChange = (event) => {
+    setNewHostId(event.target.value);
+  };
+
+  const addNewHost = () => {
+    if (newHostId.trim() !== "") {
+      setHosts([
+        ...hosts,
+        { id: newHostId, sponsor: "Custom Host", distance: "N/A" },
+      ]);
+      setSelectedHost(newHostId);
+      setNewHostId("");
+      setIsAddingNewHost(false);
+    }
   };
 
   return (
     <Container
       fluid
-      className="d-flex flex column vh-100 justify-content-center align-items-center "
+      className="d-flex flex-column vh-100 justify-content-center align-items-center"
     >
       <Card style={{ width: "80rem" }} className="">
         <Card.Header>General Settings</Card.Header>
@@ -160,7 +173,7 @@ function Settings() {
             </Row>
 
             <Row className="mb-3">
-              <Form.Group as={Col} controlId="formPruneResults">
+              <Form.Group as={Col} controlId="formServerHostSelect">
                 <Form.Label>Server Host Select</Form.Label>
                 <Form.Select
                   className="form-control"
@@ -173,9 +186,23 @@ function Settings() {
                       {host.sponsor} | Distance: {host.distance}
                     </option>
                   ))}
+                  <option value="add-new">Add New Host</option>
                 </Form.Select>
+                {isAddingNewHost && (
+                  <InputGroup className="mt-2">
+                    <FormControl
+                      type="text"
+                      placeholder="Enter new host ID"
+                      value={newHostId}
+                      onChange={handleNewHostIdChange}
+                    />
+                    <Button variant="outline-secondary" onClick={addNewHost}>
+                      Add
+                    </Button>
+                  </InputGroup>
+                )}
               </Form.Group>
-              <Form.Group as={Col} controlId="formSpeedtestServers">
+              <Form.Group as={Col} controlId="formTimezoneSelect">
                 <Form.Label>Timezone Select</Form.Label>
                 <TimezoneSelect
                   options={opcoesFusoHorario}
